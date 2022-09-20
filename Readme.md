@@ -74,6 +74,7 @@ Any new found flight will be added to the database, duplicate flights are not in
 ### Finding flights in the database once collected:
 
 Open a database GUI tool and run a query in the Flights table:
+![Picture](./data_sources/sql_picture.png)
 
 
 
