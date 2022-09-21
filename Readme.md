@@ -56,8 +56,8 @@ database='yourdatabase'
 ### Collecting flight data:
 
 There are two main scripts that you can use:
-- `get_flights_for_aircraft.py` which will query OpenSky for flights from a given list of aircrafts on a given date period.
-- `get_all_flights_for_aircraft.py` which will query OpenSky for inbound and outbound flights from a given list of airports, on a given date period.
+- `get_all_flights_for_aircraft.py` which will query OpenSky for flights from a given list of aircrafts on a given date period.
+- `get_all_flights_for_airport.py` which will query OpenSky for inbound and outbound flights from a given list of airports, on a given date period.
 
 Dates, Aircrafts and Airports are defined in the `/config/haystack_config.py` file.
 
