@@ -79,6 +79,5 @@ Open a database GUI tool and run a query in the Flights table:
 
 
 ### Known limitations:
-- The scripts don't fully handle timeouts on the OpenSky API. They currently crash and need to be re-launched.
 - At the OpenSky level, estimated departure and arrival airports are not always accurate, you might want to search fro nearby airports as well.
 
