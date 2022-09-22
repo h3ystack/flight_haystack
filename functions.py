@@ -1,12 +1,21 @@
 import datetime
+import webbrowser
 import time
-
 import psycopg2.extras
 import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 
 from config.haystack_config import host, database, user, flights_table_name
+
+from bs4 import BeautifulSoup
+
+from selenium import webdriver
+from webdriver_manager.firefox import GeckoDriverManager
+from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.service import Service
+from selenium.webdriver.firefox.options import Options
+
 
 retry_strategy = Retry(
     total=5,
@@ -407,3 +416,61 @@ def collect_flights_to_airports(airports, start, stop):
     conn.close()
     status='OK'
     return(nb_flights,status)
+
+def open_ADSB_icao_webpage(**kwargs):
+    base_url='https://globe.adsbexchange.com/?'
+    for key, value in kwargs.items():
+        base_url=base_url+key+'='+value+'&'
+        webbrowser.open(base_url, new = 2)
+
+def get_adsbex_icao_info(icao):
+    # original source from https://github.com/GeneralDeGaulle/i_fly_bernard/blob/master/src/core/adsb_exchange.py
+
+    options = Options()
+    options.set_preference("browser.download.manager.showWhenStarting", False)
+    options.headless = True
+
+    service = Service(GeckoDriverManager().install())
+
+    # ouvre firefox
+    browser = webdriver.Firefox(service=service, options=options)
+
+    url = "https://globe.adsbexchange.com/?icao=" + icao
+
+    browser.get(url)
+    time.sleep(1)  # to be sure to load the data
+
+    # initiate soup
+    content = browser.page_source
+    soup = BeautifulSoup(content, "html.parser")
+
+    # search for plan information
+    try:
+        registration=soup.find("span", attrs={"id": "selected_registration"}).get_text()
+    except:
+        pass
+
+    try:
+        type = soup.find( "span", attrs={"class": "infoData", "id": "selected_icaotype"}).get_text()
+    except:
+        pass
+
+    try:
+        longtype= soup.find("span", attrs={"class": "infoData", "id": "selected_typelong"}).get_text()
+    except:
+        pass
+
+    try:
+        desc = soup.find("span", attrs={"class": "infoData", "id": "selected_typedesc"}).get_text()
+    except:
+        pass
+
+    try:
+        country = soup.find("span", attrs={"id": "selected_country"}).get_text()
+    except:
+        pass
+
+    browser.close()
+
+    return (registration,type,longtype,desc,country)
+
