@@ -31,7 +31,7 @@ session.mount("https://", adapter)
 
 
 def get_OpenSky_flights_aircraft(icao24, start, end):
-    # Open Sky API request
+    # Open Sky API request : get flights for a given icao24
 
     print('Getting flights for plane ICAO24 :', icao24, ' between: ',
           datetime.datetime.fromtimestamp(start), ' and : ',
@@ -52,7 +52,7 @@ def get_OpenSky_flights_aircraft(icao24, start, end):
 
 
 def get_OpenSky_flights_from_departure(airport, start, end):
-    # Open Sky API request
+    # Open Sky API request : get flights for a given ideparture airport
 
     print('Getting flights from airport :', airport, ' between: ',
           datetime.datetime.fromtimestamp(start), ' and : ',
@@ -74,7 +74,7 @@ def get_OpenSky_flights_from_departure(airport, start, end):
 
 
 def get_OpenSky_flights_to_destination(airport, start, end):
-    # Open Sky API request
+    # Open Sky API request : get flights for a given iarrival airport
 
     print('Getting flights to airport :', airport, ' between: ',
           datetime.datetime.fromtimestamp(start), ' and : ',
@@ -96,6 +96,7 @@ def get_OpenSky_flights_to_destination(airport, start, end):
 
 
 def db_insert(db_cursor, table_name, **kwargs):
+    # Add flight information to database
     sql = "INSERT INTO " + str(table_name) + ' ' + '('
 
     k_list = ','.join('"%s"' % x for x in kwargs.keys())
@@ -113,6 +114,7 @@ def db_insert(db_cursor, table_name, **kwargs):
 
 
 def collect_flights_from_airports(airports, start, stop):
+    # collect flights from a given airport list and write them to database
 
 
     print('Start requesting flights for ',len(airports), ' airports, between: ',
@@ -187,6 +189,7 @@ def collect_flights_from_airports(airports, start, stop):
 
 def collect_flights_for_airports(airports,start,stop):
 
+    # collect flights to&from a given airport list and write them to database
     print('Start requesting flights for ',len(airports), ' between: ',
           datetime.datetime.fromtimestamp(start), ' and : ',
           datetime.datetime.fromtimestamp(stop))
@@ -288,6 +291,8 @@ def collect_flights_for_airports(airports,start,stop):
 
 def collect_flights_for_aircrafts(icao24,start,stop):
 
+    # collect flights for a given icao24 list and write them to database
+
     try:
         conn = psycopg2.connect(host=host, database=database, user=user)
         cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
@@ -354,6 +359,8 @@ def collect_flights_for_aircrafts(icao24,start,stop):
 
 
 def collect_flights_to_airports(airports, start, stop):
+
+    # collect flights to a given airport list and write them to database
     conn = None
     try:
         conn = psycopg2.connect(host=host, database=database, user=user)
@@ -418,12 +425,15 @@ def collect_flights_to_airports(airports, start, stop):
     return(nb_flights,status)
 
 def open_ADSB_icao_webpage(**kwargs):
+
+    # open ADSBEx page, with any given option
     base_url='https://globe.adsbexchange.com/?'
     for key, value in kwargs.items():
         base_url=base_url+key+'='+value+'&'
         webbrowser.open(base_url, new = 2)
 
 def get_adsbex_icao_info(icao):
+    #Extract and return Icao24 info (registration, type, ...) from ADSBEx web page
     # original source from https://github.com/GeneralDeGaulle/i_fly_bernard/blob/master/src/core/adsb_exchange.py
 
     options = Options()
